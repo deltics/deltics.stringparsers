@@ -19,6 +19,8 @@
       "files":[
         "src\\deltics.strings.parsers.inc",
         "src\\Deltics.Strings.Parsers.pas",
+        "src\\Deltics.Strings.Parsers.Class_.pas",
+        "src\\Deltics.Strings.Parsers.Interfaces.pas",
         "src\\Deltics.Strings.Parsers.Ansi.pas",
         "src\\Deltics.Strings.Parsers.Ansi.AsBoolean.pas",
         "src\\Deltics.Strings.Parsers.Ansi.AsDatetime.pas",

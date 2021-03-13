@@ -8,19 +8,19 @@ interface
 
   uses
     Deltics.StringTypes,
-    Deltics.Strings.Parsers.Ansi,
-    Deltics.Strings.Parsers.Wide;
+    Deltics.Strings.Parsers.Interfaces,
+    Deltics.Strings.Parsers.Class_;
 
 
-  type
-    Parse = class
-    public
-      class function Ansi(const aBuffer: PAnsiChar; const aNumChars: Integer): AnsiParser; overload;
-      class function Ansi(const aString: AnsiString): AnsiParser; overload;
-      class function Wide(const aBuffer: PWideChar; const aNumChars: Integer): WideParser; overload;
-      class function Wide(const aString: UnicodeString): WideParser; overload;
-    end;
 
+  function Parse: ParseClass; overload;
+  function Parse(const aString: AnsiString): Parser; overload;
+  function Parse(const aString: UnicodeString): Parser; overload;
+{$ifdef UNICODE}
+  function Parse(const aString: Utf8String): Parser; overload;
+  function Parse(const aString: WideString): Parser; overload;
+{$endif}
+  function ParseUtf8(const aString: Utf8String): Parser;
 
 
 
@@ -28,31 +28,43 @@ implementation
 
 
 
-{ Parse }
-
-  class function Parse.Ansi(const aBuffer: PAnsiChar; const aNumChars: Integer): AnsiParser;
+  function Parse: ParseClass;
   begin
-    result := TAnsiParser.Create(aBuffer, aNumChars);
+    result := Parse_;
   end;
 
 
-  class function Parse.Ansi(const aString: AnsiString): AnsiParser;
+  function Parse(const aString: AnsiString): Parser;
   begin
-    result := TAnsiParser.Create(PAnsiChar(aString), Length(aString));
+    result := Parse_.Ansi(aString);
   end;
 
 
-
-  class function Parse.Wide(const aBuffer: PWideChar; const aNumChars: Integer): WideParser;
+  function Parse(const aString: UnicodeString): Parser;
   begin
-    result := TWideParser.Create(aBuffer, aNumChars);
+    result := Parse_.Wide(aString);
   end;
 
 
-  class function Parse.Wide(const aString: UnicodeString): WideParser;
+{$ifdef UNICODE}
+  function Parse(const aString: Utf8String): Parser;
   begin
-    result := TWideParser.Create(PWideChar(aString), Length(aString));
+    result := Parse_.Ansi(AnsiString(aString));
   end;
+
+
+  function Parse(const aString: WideString): Parser;
+  begin
+    result := Parse_.Wide(WideString(aString));
+  end;
+{$endif}
+
+
+  function ParseUtf8(const aString: Utf8String): Parser;
+  begin
+    result := Parse_.Ansi(AnsiString(aString));
+  end;
+
 
 
 end.

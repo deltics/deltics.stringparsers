@@ -9,7 +9,9 @@ interface
 
   type
     Parsers = class(TTest)
+      procedure AnsiAsString;
       procedure AnsiIsInteger;
+      procedure WideAsString;
       procedure WideIsInteger;
     end;
 
@@ -29,6 +31,18 @@ implementation
 
 
 
+  procedure Parsers.AnsiAsString;
+  var
+    buf: AnsiString;
+    result: String;
+  begin
+    buf     := 'test';
+    result  := Parse(buf).AsString;
+
+    Test('Parse.Ansi().AsString').Assert(result).Equals('test');
+  end;
+
+
   procedure Parsers.AnsiIsInteger;
   const
     DATA  : array[1..13] of AnsiIsIntTestCase = (
@@ -41,10 +55,10 @@ implementation
       (Value: 'abc';            IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;   AsInt64: 0),
       (Value: '1,024';          IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;   AsInt64: 0),
       (Value: '42';             IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: 42;  AsInt64: 42),
-      (Value: '4 e3';           IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;           AsInt64:  0),
-      (Value: '4294967296';     IsInteger: FALSE; IsInt64: TRUE;  AsInteger: 0;           AsInt64:  4294967296),
-      (Value: '2147483647';     IsInteger: TRUE;  IsInt64: TRUE;  AsInteger:  2147483647; AsInt64:  2147483647),
-      (Value: '-2147483648';    IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: -2147483648; AsInt64: -2147483648)
+      (Value: '4 e3';           IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;             AsInt64:  0),
+      (Value: '4294967295';     IsInteger: FALSE; IsInt64: TRUE;  AsInteger: 0;             AsInt64:  High(Cardinal)),
+      (Value: '2147483647';     IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: High(Integer); AsInt64:  High(Integer)),
+      (Value: '-2147483648';    IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: Low(Integer);  AsInt64:  Low(Integer))
     );
   var
     i: Integer;
@@ -70,6 +84,18 @@ implementation
   end;
 
 
+  procedure Parsers.WideAsString;
+  var
+    buf: UnicodeString;
+    result: String;
+  begin
+    buf     := 'test';
+    result  := Parse(buf).AsString;
+
+    Test('Parse.Wide().AsString').Assert(result).Equals('test');
+  end;
+
+
   procedure Parsers.WideIsInteger;
   const
     DATA  : array[1..13] of WideIsIntTestCase = (
@@ -82,10 +108,10 @@ implementation
       (Value: 'abc';            IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;   AsInt64: 0),
       (Value: '1,024';          IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;   AsInt64: 0),
       (Value: '42';             IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: 42;  AsInt64: 42),
-      (Value: '4 e3';           IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;           AsInt64:  0),
-      (Value: '4294967296';     IsInteger: FALSE; IsInt64: TRUE;  AsInteger: 0;           AsInt64:  4294967296),
-      (Value: '2147483647';     IsInteger: TRUE;  IsInt64: TRUE;  AsInteger:  2147483647; AsInt64:  2147483647),
-      (Value: '-2147483648';    IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: -2147483648; AsInt64: -2147483648)
+      (Value: '4 e3';           IsInteger: FALSE; IsInt64: FALSE; AsInteger: 0;             AsInt64:  0),
+      (Value: '4294967295';     IsInteger: FALSE; IsInt64: TRUE;  AsInteger: 0;             AsInt64:  High(Cardinal)),
+      (Value: '2147483647';     IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: High(Integer); AsInt64:  High(Integer)),
+      (Value: '-2147483648';    IsInteger: TRUE;  IsInt64: TRUE;  AsInteger: Low(Integer);  AsInt64:  Low(Integer))
     );
   var
     i: Integer;

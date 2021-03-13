@@ -4,12 +4,11 @@
   program test;
 
 
-
-
-
 uses
   Deltics.Smoketest,
   Deltics.Strings.Parsers in '..\src\Deltics.Strings.Parsers.pas',
+  Deltics.Strings.Parsers.Class_ in '..\src\Deltics.Strings.Parsers.Class_.pas',
+  Deltics.Strings.Parsers.Interfaces in '..\src\Deltics.Strings.Parsers.Interfaces.pas',
   Deltics.Strings.Parsers.Ansi in '..\src\Deltics.Strings.Parsers.Ansi.pas',
   Deltics.Strings.Parsers.Ansi.AsBoolean in '..\src\Deltics.Strings.Parsers.Ansi.AsBoolean.pas',
   Deltics.Strings.Parsers.Ansi.AsDatetime in '..\src\Deltics.Strings.Parsers.Ansi.AsDatetime.pas',

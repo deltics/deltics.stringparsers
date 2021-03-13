@@ -17,6 +17,10 @@ interface
     public // AnsiParser
       function AsBoolean: Boolean;
       function AsBooleanOrDefault(const aDefault: Boolean): Boolean;
+      function AsCurrency: Currency;
+      function AsCurrencyOrDefault(const aDefault: Currency): Currency;
+      function AsExtended: Extended;
+      function AsExtendedOrDefault(const aDefault: Extended): Extended;
       function AsInt64: Int64;
       function AsInt64OrDefault(const aDefault: Int64): Int64;
       function AsInteger: Integer;
@@ -24,6 +28,11 @@ interface
       function AsString: String;
       function IsBoolean: Boolean; overload;
       function IsBoolean(var aValue: Boolean): Boolean; overload;
+      function IsCurrency: Boolean; overload;
+      function IsCurrency(var aValue: Currency): Boolean; overload;
+      function IsReal: Boolean; overload;
+      function IsExtended: Boolean; overload;
+      function IsExtended(var aValue: Extended): Boolean; overload;
       function IsInt64: Boolean; overload;
       function IsInt64(var aValue: Int64): Boolean; overload;
       function IsInteger: Boolean; overload;
@@ -49,6 +58,8 @@ implementation
     Deltics.Memory,
     Deltics.Unicode,
     Deltics.Strings.Parsers.Ansi.AsBoolean,
+    Deltics.Strings.Parsers.Ansi.AsCurrency,
+    Deltics.Strings.Parsers.Ansi.AsReal,
     Deltics.Strings.Parsers.Ansi.AsInteger;
 
 
@@ -101,6 +112,38 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.AsCurrency: Currency;
+  begin
+    if NOT ParseCurrency(fBuffer, fNumChars, result) then
+      raise EConvertError.CreateFmt('''%s'' is not a valid currency expression', [AsString]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.AsCurrencyOrDefault(const aDefault: Currency): Currency;
+  begin
+    if NOT ParseCurrency(fBuffer, fNumChars, result) then
+      result := aDefault;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.AsExtended: Extended;
+  begin
+    if NOT ParseExtended(fBuffer, fNumChars, result) then
+      raise EConvertError.CreateFmt('''%s'' is not a valid extended precision expression', [AsString]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.AsExtendedOrDefault(const aDefault: Extended): Extended;
+  begin
+    if NOT ParseExtended(fBuffer, fNumChars, result) then
+      result := aDefault;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   function TAnsiParser.AsInt64: Int64;
   begin
     if NOT ParseInt64(fBuffer, fNumChars, result) then
@@ -144,6 +187,43 @@ implementation
   function TAnsiParser.IsBoolean(var aValue: Boolean): Boolean;
   begin
     result := ParseBoolean(fBuffer, fNumChars, aValue);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.IsCurrency: Boolean;
+  begin
+    result := CheckCurrency(fBuffer, fNumChars);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.IsCurrency(var aValue: Currency): Boolean;
+  begin
+    result := ParseCurrency(fBuffer, fNumChars, aValue);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.IsExtended: Boolean;
+  var
+    notUsed: Extended;
+  begin
+    result := ParseExtended(fBuffer, fNumChars, notUsed);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.IsReal: Boolean;
+  begin
+    result := CheckReal(fBuffer, fNumChars);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.IsExtended(var aValue: Extended): Boolean;
+  begin
+    result := ParseExtended(fBuffer, fNumChars, aValue);
   end;
 
 

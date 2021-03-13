@@ -17,6 +17,10 @@ interface
     public // WideParser
       function AsBoolean: Boolean;
       function AsBooleanOrDefault(const aDefault: Boolean): Boolean;
+      function AsCurrency: Currency;
+      function AsCurrencyOrDefault(const aDefault: Currency): Currency;
+      function AsExtended: Extended;
+      function AsExtendedOrDefault(const aDefault: Extended): Extended;
       function AsInt64: Int64;
       function AsInt64OrDefault(const aDefault: Int64): Int64;
       function AsInteger: Integer;
@@ -24,10 +28,15 @@ interface
       function AsString: String;
       function IsBoolean: Boolean; overload;
       function IsBoolean(var aValue: Boolean): Boolean; overload;
+      function IsCurrency: Boolean; overload;
+      function IsCurrency(var aValue: Currency): Boolean; overload;
+      function IsExtended: Boolean; overload;
+      function IsExtended(var aValue: Extended): Boolean; overload;
       function IsInt64: Boolean; overload;
       function IsInt64(var aValue: Int64): Boolean; overload;
       function IsInteger: Boolean; overload;
       function IsInteger(var aValue: Integer): Boolean; overload;
+      function IsReal: Boolean; overload;
 
     private
       fBuffer: PWideChar;
@@ -49,7 +58,9 @@ implementation
     Deltics.Memory,
     Deltics.Unicode,
     Deltics.Strings.Parsers.Wide.AsBoolean,
-    Deltics.Strings.Parsers.Wide.AsInteger;
+    Deltics.Strings.Parsers.Wide.AsInteger,
+    Deltics.Strings.Parsers.Wide.AsCurrency,
+    Deltics.Strings.Parsers.Wide.AsReal;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
@@ -101,6 +112,38 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.AsCurrency: Currency;
+  begin
+    if NOT ParseCurrency(fBuffer, fNumChars, result) then
+      raise EConvertError.CreateFmt('''%s'' is not a valid currency expression', [AsString]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.AsCurrencyOrDefault(const aDefault: Currency): Currency;
+  begin
+    if NOT ParseCurrency(fBuffer, fNumChars, result) then
+      result := aDefault;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.AsExtended: Extended;
+  begin
+    if NOT ParseExtended(fBuffer, fNumChars, result) then
+      raise EConvertError.CreateFmt('''%s'' is not a valid extended precision expression', [AsString]);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.AsExtendedOrDefault(const aDefault: Extended): Extended;
+  begin
+    if NOT ParseExtended(fBuffer, fNumChars, result) then
+      result := aDefault;
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   function TWideParser.AsInt64: Int64;
   begin
     if NOT ParseInt64(fBuffer, fNumChars, result) then
@@ -144,6 +187,43 @@ implementation
   function TWideParser.IsBoolean(var aValue: Boolean): Boolean;
   begin
     result := ParseBoolean(fBuffer, fNumChars, aValue);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.IsCurrency: Boolean;
+  begin
+    result := CheckCurrency(fBuffer, fNumChars);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.IsCurrency(var aValue: Currency): Boolean;
+  begin
+    result := ParseCurrency(fBuffer, fNumChars, aValue);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.IsExtended: Boolean;
+  var
+    notUsed: Extended;
+  begin
+    result := ParseExtended(fBuffer, fNumChars, notUsed);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.IsReal: Boolean;
+  begin
+    result := CheckReal(fBuffer, fNumChars);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.IsExtended(var aValue: Extended): Boolean;
+  begin
+    result := ParseExtended(fBuffer, fNumChars, aValue);
   end;
 
 

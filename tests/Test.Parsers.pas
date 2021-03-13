@@ -82,7 +82,11 @@ implementation
       (Value: '4294967295';     IsExtended: TRUE;   AsExtended: 4294967295.0),
       (Value: '2147483647';     IsExtended: TRUE;   AsExtended: 2147483647.0),
       (Value: '-2147483648';    IsExtended: TRUE;   AsExtended: -2147483648.0),
+    {$ifdef 32BIT}
       (Value: '3.37e-4932';     IsExtended: TRUE;   AsExtended: 3.37e-4932)
+    {$else}
+      (Value: '3.37e-4932';     IsExtended: FALSE;  AsExtended: 0)
+    {$endif}
     );
   var
     i: Integer;
@@ -192,7 +196,11 @@ implementation
       (Value: '4294967295';     IsExtended: TRUE;   AsExtended: 4294967295.0),
       (Value: '2147483647';     IsExtended: TRUE;   AsExtended: 2147483647.0),
       (Value: '-2147483648';    IsExtended: TRUE;   AsExtended: -2147483648.0),
+    {$ifdef 32BIT}
       (Value: '3.37e-4932';     IsExtended: TRUE;   AsExtended: 3.37e-4932)
+    {$else}
+      (Value: '3.37e-4932';     IsExtended: FALSE;  AsExtended: 0)
+    {$endif}
     );
   var
     i: Integer;

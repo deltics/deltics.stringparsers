@@ -82,22 +82,22 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TWideParser.get_AsString: String;
+  function TWideParser.AsString: String;
 {$ifdef UNICODE}
   begin
     SetLength(result, fNumChars);
-    Memory.Copy(fBuffer, fNumChars, PWideChar(result));
+    Memory.Copy(fBuffer, fNumChars * 2, PWideChar(result));
   end;
 {$else}
   var
     len: Integer;
   begin
-    len := WideChar(CP_ACP, 0, fBuffer, fNumChars, NIL, 0);
-    if fNumChars = 1 then
+    len := WideCharToMultiByte(CP_ACP, 0, fBuffer, fNumChars, NIL, 0, NIL, NIL);
+    if fNumChars = -1 then
       Dec(len);
 
     SetLength(result, len);
-    MultiByteToWideChar(CP_ACP, 0, fBuffer, fNumChars, PWideChar(result), 0);
+    WideCharToMultiByte(CP_ACP, 0, fBuffer, fNumChars, PAnsiChar(result), len, NIL, NIL);
   end;
 {$endif}
 

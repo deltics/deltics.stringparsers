@@ -82,17 +82,17 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.get_AsString: String;
+  function TAnsiParser.AsString: String;
 {$ifdef UNICODE}
   var
     len: Integer;
   begin
     len := MultiByteToWideChar(CP_ACP, 0, fBuffer, fNumChars, NIL, 0);
-    if fNumChars = 1 then
+    if fNumChars = -1 then
       Dec(len);
 
     SetLength(result, len);
-    MultiByteToWideChar(CP_ACP, 0, fBuffer, fNumChars, PWideChar(result), 0);
+    MultiByteToWideChar(CP_ACP, 0, fBuffer, fNumChars, PWideChar(result), len);
   end;
 {$else}
   begin

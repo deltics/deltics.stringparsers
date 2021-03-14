@@ -1,4 +1,6 @@
 
+{$i deltics.inc}
+
   unit Test.Parsers;
 
 interface
@@ -28,6 +30,7 @@ interface
 implementation
 
   uses
+    Math,
     SysUtils,
     Deltics.StringTypes,
     Deltics.Strings.Parsers;
@@ -67,7 +70,7 @@ implementation
 
   procedure Parsers.AnsiIsExtended;
   const
-    DATA  : array[1..15] of AnsiIsExtendedTestCase = (
+    DATA  : array[1..18] of AnsiIsExtendedTestCase = (
       (Value: '42.0';           IsExtended: TRUE;   AsExtended: 42.0),
       (Value: '4.2e1';          IsExtended: TRUE;   AsExtended: 4.2e1),
       (Value: '-4.2e-1';        IsExtended: TRUE;   AsExtended: -4.2e-1),
@@ -82,10 +85,14 @@ implementation
       (Value: '4294967295';     IsExtended: TRUE;   AsExtended: 4294967295.0),
       (Value: '2147483647';     IsExtended: TRUE;   AsExtended: 2147483647.0),
       (Value: '-2147483648';    IsExtended: TRUE;   AsExtended: -2147483648.0),
+      (Value: '-1.7e308';       IsExtended: TRUE;   AsExtended: -1.7e308),
+      (Value: '1.7e308';        IsExtended: TRUE;   AsExtended: 1.7e308),
     {$ifdef 32BIT}
-      (Value: '3.37e-4932';     IsExtended: TRUE;   AsExtended: 3.37e-4932)
+      (Value: '-1.1e4932';      IsExtended: TRUE;   AsExtended: -1.1e4932),
+      (Value: '3.4e-4932';      IsExtended: TRUE;   AsExtended: 3.4e-4932)
     {$else}
-      (Value: '3.37e-4932';     IsExtended: FALSE;  AsExtended: 0)
+      (Value: '-1.1e4932';      IsExtended: FALSE;  AsExtended: 0),
+      (Value: '3.4e-4932';      IsExtended: FALSE;  AsExtended: 0)
     {$endif}
     );
   var
@@ -94,16 +101,19 @@ implementation
     isExtended: Boolean;
     asExtended: Extended;
   begin
-    for i := Low(DATA) to High(DATA) do
+    for i := Low(DATA) to {$ifdef 32BIT}High(DATA){$else}15{$endif} do
     begin
-      isReal := Parse.Ansi(DATA[i].Value).IsReal;
-      Test('Parse.Ansi({test}).IsExtended', [DATA[i].Value]).Assert(isReal).Equals(DATA[i].IsExtended);
+      isReal      := Parse.Ansi(DATA[i].Value).IsReal;
+      Test('Parse.Ansi({test}).IsReal', [DATA[i].Value]).Assert(isReal).Equals(DATA[i].IsExtended);
+
+      isExtended  := Parse.Ansi(DATA[i].Value).IsExtended;
+      Test('Parse.Ansi({test}).IsExtended', [DATA[i].Value]).Assert(isExtended).Equals(DATA[i].IsExtended);
 
       isExtended := Parse.Ansi(DATA[i].Value).IsExtended(asExtended);
       Test('Parse.Ansi({test}).IsExtended(var)', [DATA[i].Value]).Assert(isExtended).Equals(DATA[i].IsExtended);
 
       if DATA[i].IsExtended then
-        Test('Parse.Ansi({test}).AsExtended', [DATA[i].Value]).Assert(asExtended = DATA[i].AsExtended);
+        Test('Parse.Ansi({test}).AsExtended', [DATA[i].Value]).Assert(asExtended - DATA[i].AsExtended < 0.0001);
     end;
   end;
 
@@ -181,7 +191,7 @@ implementation
 
   procedure Parsers.WideIsExtended;
   const
-    DATA  : array[1..15] of WideIsExtendedTestCase = (
+    DATA  : array[1..18] of WideIsExtendedTestCase = (
       (Value: '42.0';           IsExtended: TRUE;   AsExtended: 42.0),
       (Value: '4.2e1';          IsExtended: TRUE;   AsExtended: 4.2e1),
       (Value: '-4.2e-1';        IsExtended: TRUE;   AsExtended: -4.2e-1),
@@ -196,10 +206,14 @@ implementation
       (Value: '4294967295';     IsExtended: TRUE;   AsExtended: 4294967295.0),
       (Value: '2147483647';     IsExtended: TRUE;   AsExtended: 2147483647.0),
       (Value: '-2147483648';    IsExtended: TRUE;   AsExtended: -2147483648.0),
+      (Value: '-1.7e308';       IsExtended: TRUE;   AsExtended: -1.7e308),
+      (Value: '1.7e308';        IsExtended: TRUE;   AsExtended: 1.7e308),
     {$ifdef 32BIT}
-      (Value: '3.37e-4932';     IsExtended: TRUE;   AsExtended: 3.37e-4932)
+      (Value: '-1.1e4932';      IsExtended: TRUE;   AsExtended: -1.1e4932),
+      (Value: '3.4e-4932';      IsExtended: TRUE;   AsExtended: 3.4e-4932)
     {$else}
-      (Value: '3.37e-4932';     IsExtended: FALSE;  AsExtended: 0)
+      (Value: '-1.1e4932';      IsExtended: FALSE;  AsExtended: 0),
+      (Value: '3.4e-4932';      IsExtended: FALSE;  AsExtended: 0)
     {$endif}
     );
   var
@@ -208,16 +222,19 @@ implementation
     isExtended: Boolean;
     asExtended: Extended;
   begin
-    for i := Low(DATA) to High(DATA) do
+    for i := Low(DATA) to {$ifdef 32BIT}High(DATA){$else}15{$endif} do
     begin
-      isReal := Parse.Wide(DATA[i].Value).IsReal;
-      Test('Parse.Wide({test}).IsExtended', [DATA[i].Value]).Assert(isReal).Equals(DATA[i].IsExtended);
+      isReal      := Parse.Wide(DATA[i].Value).IsReal;
+      Test('Parse.Wide({test}).IsReal', [DATA[i].Value]).Assert(isReal).Equals(DATA[i].IsExtended);
+
+      isExtended  := Parse.Wide(DATA[i].Value).IsExtended;
+      Test('Parse.Wide({test}).IsExtended', [DATA[i].Value]).Assert(isExtended).Equals(DATA[i].IsExtended);
 
       isExtended := Parse.Wide(DATA[i].Value).IsExtended(asExtended);
       Test('Parse.Wide({test}).IsExtended(var)', [DATA[i].Value]).Assert(isExtended).Equals(DATA[i].IsExtended);
 
       if DATA[i].IsExtended then
-        Test('Parse.Wide({test}).AsExtended', [DATA[i].Value]).Assert(asExtended = DATA[i].AsExtended);
+        Test('Parse.Wide({test}).AsExtended', [DATA[i].Value]).Assert(asExtended - DATA[i].AsExtended < 0.0001);
     end;
   end;
 

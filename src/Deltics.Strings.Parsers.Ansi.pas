@@ -214,13 +214,6 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsReal: Boolean;
-  begin
-    result := CheckReal(fBuffer, fNumChars);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
   function TAnsiParser.IsExtended(var aValue: Extended): Boolean;
   begin
     result := ParseExtended(fBuffer, fNumChars, aValue);
@@ -252,6 +245,13 @@ implementation
   function TAnsiParser.IsInteger(var aValue: Integer): Boolean;
   begin
     result := ParseInteger(fBuffer, fNumChars, aValue);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TAnsiParser.IsReal: Boolean;
+  begin
+    result := CheckReal(fBuffer, fNumChars);
   end;
 
 

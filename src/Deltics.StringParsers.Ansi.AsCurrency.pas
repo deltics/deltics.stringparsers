@@ -1,22 +1,20 @@
 
-{$i deltics.strings.parsers.inc}
+{$i deltics.stringparsers.inc}
 
 
-  unit Deltics.Strings.Parsers.Ansi.AsReal;
+  unit Deltics.StringParsers.Ansi.AsCurrency;
 
 
 interface
 
-  function CheckReal(aBuffer: PAnsiChar; aLen: Integer): Boolean;
+  function CheckCurrency(aBuffer: PAnsiChar; aLen: Integer): Boolean;
   function ParseCurrency(aBuffer: PAnsiChar; aLen: Integer; var aValue: Currency): Boolean;
-  function ParseExtended(aBuffer: PAnsiChar; aLen: Integer; var aValue: Extended): Boolean;
 
 
 implementation
 
   uses
     SysUtils,
-    Deltics.Memory,
     Deltics.Strings;
 
 
@@ -80,16 +78,11 @@ implementation
 
 
 
-
-
-
-
-
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckReal(aBuffer: PAnsiChar;
-                     aLen: Integer): Boolean;
+  function CheckCurrency(aBuffer: PAnsiChar;
+                         aLen: Integer): Boolean;
   type
-    Element = (eInt, eDec, eExpSign, eExp);
+    Element = (eInt, eDec);
   var
     pc: PAnsiChar absolute aBuffer;
     i: Integer;
@@ -100,28 +93,16 @@ implementation
     if NOT result then
       EXIT;
 
-    result := FALSE;
-
-    e := eInt;
+    result  := FALSE;
+    e       := eInt;
 
     for i := 0 to Pred(aLen) do
     begin
       case pc[i] of
-        '0'..'9'  : if e = eExpSign then
-                      e := eExp;
-
-        '-', '+'  : if e = eExpSign then
-                      e := eExp
-                    else
-                      EXIT;
+        '0'..'9'  : CONTINUE;
 
         '.'       : if e = eInt then
                       e := eDec
-                    else
-                      EXIT;
-
-        'e'       : if (e in [eInt, eDec]) then
-                      e := eExpSign
                     else
                       EXIT;
       else
@@ -142,18 +123,6 @@ implementation
   begin
     s := Str.FromAnsi(aBuffer, aLen);
     result := TryStrToCurr(s, aValue);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseExtended(    aBuffer: PAnsiChar;
-                             aLen: Integer;
-                         var aValue: Extended): Boolean;
-  var
-    s: String;
-  begin
-    s := Str.FromAnsi(aBuffer, aLen);
-    result := TryStrToFloat(s, aValue);
   end;
 
 

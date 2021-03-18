@@ -1,7 +1,7 @@
 
-{$i deltics.strings.parsers.inc}
+{$i deltics.stringparsers.inc}
 
-  unit Deltics.Strings.Parsers.Interfaces;
+  unit Deltics.StringParsers.Interfaces;
 
 
 interface

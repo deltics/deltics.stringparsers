@@ -1,8 +1,8 @@
 
-{$i deltics.strings.parsers.inc}
+{$i deltics.stringparsers.inc}
 
 
-  unit Deltics.Strings.Parsers.Ansi.AsInteger;
+  unit Deltics.StringParsers.Ansi.AsInteger;
 
 
 interface

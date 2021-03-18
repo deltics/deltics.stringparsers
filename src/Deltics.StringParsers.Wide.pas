@@ -1,7 +1,7 @@
 
-{$i deltics.strings.parsers.inc}
+{$i deltics.stringparsers.inc}
 
-  unit Deltics.Strings.Parsers.Ansi;
+  unit Deltics.StringParsers.Wide;
 
 
 interface
@@ -9,12 +9,12 @@ interface
   uses
     Deltics.InterfacedObjects,
     Deltics.StringTypes,
-    Deltics.Strings.Parsers.Interfaces;
+    Deltics.StringParsers.Interfaces;
 
 
   type
-    TAnsiParser = class(TComInterfacedObject, Parser)
-    public // AnsiParser
+    TWideParser = class(TComInterfacedObject, Parser)
+    public // WideParser
       function AsBoolean: Boolean;
       function AsBooleanOrDefault(const aDefault: Boolean): Boolean;
       function AsCurrency: Currency;
@@ -30,19 +30,19 @@ interface
       function IsBoolean(var aValue: Boolean): Boolean; overload;
       function IsCurrency: Boolean; overload;
       function IsCurrency(var aValue: Currency): Boolean; overload;
-      function IsReal: Boolean; overload;
       function IsExtended: Boolean; overload;
       function IsExtended(var aValue: Extended): Boolean; overload;
       function IsInt64: Boolean; overload;
       function IsInt64(var aValue: Int64): Boolean; overload;
       function IsInteger: Boolean; overload;
       function IsInteger(var aValue: Integer): Boolean; overload;
+      function IsReal: Boolean; overload;
 
     private
-      fBuffer: PAnsiChar;
+      fBuffer: PWideChar;
       fNumChars: Integer;
     public
-      constructor Create(const aBuffer: PAnsiChar; const aNumChars: Integer);
+      constructor Create(const aBuffer: PWideChar; const aNumChars: Integer);
     end;
 
 
@@ -52,19 +52,19 @@ implementation
 
   uses
     SysUtils,
-  {$ifdef UNICODE}
+  {$ifNdef UNICODE}
     Windows,
   {$endif}
     Deltics.Memory,
     Deltics.Unicode,
-    Deltics.Strings.Parsers.Ansi.AsBoolean,
-    Deltics.Strings.Parsers.Ansi.AsCurrency,
-    Deltics.Strings.Parsers.Ansi.AsReal,
-    Deltics.Strings.Parsers.Ansi.AsInteger;
+    Deltics.StringParsers.Wide.AsBoolean,
+    Deltics.StringParsers.Wide.AsInteger,
+    Deltics.StringParsers.Wide.AsCurrency,
+    Deltics.StringParsers.Wide.AsReal;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  constructor TAnsiParser.Create(const aBuffer: PAnsiChar;
+  constructor TWideParser.Create(const aBuffer: PWideChar;
                                  const aNumChars: Integer);
   begin
     inherited Create;
@@ -75,28 +75,28 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsString: String;
+  function TWideParser.AsString: String;
 {$ifdef UNICODE}
+  begin
+    SetLength(result, fNumChars);
+    Memory.Copy(fBuffer, fNumChars * 2, PWideChar(result));
+  end;
+{$else}
   var
     len: Integer;
   begin
-    len := MultiByteToWideChar(CP_ACP, 0, fBuffer, fNumChars, NIL, 0);
+    len := WideCharToMultiByte(CP_ACP, 0, fBuffer, fNumChars, NIL, 0, NIL, NIL);
     if fNumChars = -1 then
       Dec(len);
 
     SetLength(result, len);
-    MultiByteToWideChar(CP_ACP, 0, fBuffer, fNumChars, PWideChar(result), len);
-  end;
-{$else}
-  begin
-    SetLength(result, fNumChars);
-    Memory.Copy(fBuffer, fNumChars, PAnsiChar(result));
+    WideCharToMultiByte(CP_ACP, 0, fBuffer, fNumChars, PAnsiChar(result), len, NIL, NIL);
   end;
 {$endif}
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsBoolean: Boolean;
+  function TWideParser.AsBoolean: Boolean;
   begin
     if NOT ParseBoolean(fBuffer, fNumChars, result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid boolean expression', [AsString]);
@@ -104,7 +104,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsBooleanOrDefault(const aDefault: Boolean): Boolean;
+  function TWideParser.AsBooleanOrDefault(const aDefault: Boolean): Boolean;
   begin
     if NOT ParseBoolean(fBuffer, fNumChars, result) then
       result := aDefault;
@@ -112,7 +112,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsCurrency: Currency;
+  function TWideParser.AsCurrency: Currency;
   begin
     if NOT ParseCurrency(fBuffer, fNumChars, result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid currency expression', [AsString]);
@@ -120,7 +120,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsCurrencyOrDefault(const aDefault: Currency): Currency;
+  function TWideParser.AsCurrencyOrDefault(const aDefault: Currency): Currency;
   begin
     if NOT ParseCurrency(fBuffer, fNumChars, result) then
       result := aDefault;
@@ -128,7 +128,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsExtended: Extended;
+  function TWideParser.AsExtended: Extended;
   begin
     if NOT ParseExtended(fBuffer, fNumChars, result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid extended precision expression', [AsString]);
@@ -136,7 +136,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsExtendedOrDefault(const aDefault: Extended): Extended;
+  function TWideParser.AsExtendedOrDefault(const aDefault: Extended): Extended;
   begin
     if NOT ParseExtended(fBuffer, fNumChars, result) then
       result := aDefault;
@@ -144,7 +144,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsInt64: Int64;
+  function TWideParser.AsInt64: Int64;
   begin
     if NOT ParseInt64(fBuffer, fNumChars, result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid 64-bit integer expression', [AsString]);
@@ -152,7 +152,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsInt64OrDefault(const aDefault: Int64): Int64;
+  function TWideParser.AsInt64OrDefault(const aDefault: Int64): Int64;
   begin
     if NOT ParseInt64(fBuffer, fNumChars, result) then
       result := aDefault;
@@ -160,7 +160,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsInteger: Integer;
+  function TWideParser.AsInteger: Integer;
   begin
     if NOT ParseInteger(fBuffer, fNumChars, result) then
       raise EConvertError.CreateFmt('''%s'' is not a valid integer expression', [AsString]);
@@ -168,7 +168,7 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.AsIntegerOrDefault(const aDefault: Integer): Integer;
+  function TWideParser.AsIntegerOrDefault(const aDefault: Integer): Integer;
   begin
     if NOT ParseInteger(fBuffer, fNumChars, result) then
       result := aDefault;
@@ -177,35 +177,35 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsBoolean: Boolean;
+  function TWideParser.IsBoolean: Boolean;
   begin
     result := CheckBoolean(fBuffer, fNumChars);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsBoolean(var aValue: Boolean): Boolean;
+  function TWideParser.IsBoolean(var aValue: Boolean): Boolean;
   begin
     result := ParseBoolean(fBuffer, fNumChars, aValue);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsCurrency: Boolean;
+  function TWideParser.IsCurrency: Boolean;
   begin
     result := CheckCurrency(fBuffer, fNumChars);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsCurrency(var aValue: Currency): Boolean;
+  function TWideParser.IsCurrency(var aValue: Currency): Boolean;
   begin
     result := ParseCurrency(fBuffer, fNumChars, aValue);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsExtended: Boolean;
+  function TWideParser.IsExtended: Boolean;
   var
     notUsed: Extended;
   begin
@@ -214,44 +214,44 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsExtended(var aValue: Extended): Boolean;
+  function TWideParser.IsReal: Boolean;
+  begin
+    result := CheckReal(fBuffer, fNumChars);
+  end;
+
+
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function TWideParser.IsExtended(var aValue: Extended): Boolean;
   begin
     result := ParseExtended(fBuffer, fNumChars, aValue);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsInt64: Boolean;
+  function TWideParser.IsInt64: Boolean;
   begin
     result := CheckInteger(fBuffer, fNumChars);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsInt64(var aValue: Int64): Boolean;
+  function TWideParser.IsInt64(var aValue: Int64): Boolean;
   begin
     result := ParseInt64(fBuffer, fNumChars, aValue);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsInteger: Boolean;
+  function TWideParser.IsInteger: Boolean;
   begin
     result := CheckInteger(fBuffer, fNumChars);
   end;
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsInteger(var aValue: Integer): Boolean;
+  function TWideParser.IsInteger(var aValue: Integer): Boolean;
   begin
     result := ParseInteger(fBuffer, fNumChars, aValue);
-  end;
-
-
-  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function TAnsiParser.IsReal: Boolean;
-  begin
-    result := CheckReal(fBuffer, fNumChars);
   end;
 
 

@@ -1,7 +1,7 @@
 
 {$i deltics.inc}
 
-{$ifdef debug_DelticsStringsParsers}
+{$ifdef debug_DelticsStringParsers}
   {$undef InlineMethods}
   {$debuginfo ON}
 {$endif}

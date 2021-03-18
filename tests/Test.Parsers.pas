@@ -33,7 +33,7 @@ implementation
     Math,
     SysUtils,
     Deltics.StringTypes,
-    Deltics.Strings.Parsers;
+    Deltics.StringParsers;
 
 
   type

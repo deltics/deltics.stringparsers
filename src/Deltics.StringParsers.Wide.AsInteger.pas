@@ -1,24 +1,29 @@
 
-{$i deltics.strings.parsers.inc}
+{$i deltics.stringparsers.inc}
 
 
-  unit Deltics.Strings.Parsers.Ansi.AsDatetime;
+  unit Deltics.StringParsers.Wide.AsInteger;
 
 
 interface
 
-  function CheckDatetime(aBuffer: PAnsiChar; aLen: Integer): Boolean;
-  function ParseDatetime(aBuffer: PAnsiChar; aLen: Integer; var aValue: TDateTime): Boolean;
+  function CheckInteger(aBuffer: PWideChar; aLen: Integer): Boolean;
+  function ParseInt64(aBuffer: PWideChar; aLen: Integer; var aValue: Int64): Boolean;
+  function ParseInteger(aBuffer: PWideChar; aLen: Integer; var aValue: Integer): Boolean;
+
 
 implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function Init(var aBuffer: PAnsiChar;
+  function Init(var aBuffer: PWideChar;
                 var aLen: Integer;
                 var aBase: Integer;
-                var aNeg: Boolean): Boolean; 
+                var aNeg: Boolean): Boolean; {$ifdef InlineMethods} inline; {$endif}
   begin
+    aBase := 10;
+    aNeg  := FALSE;
+
     while (aLen > 0) and (aBuffer[0] = ' ') do
     begin
       Inc(aBuffer);
@@ -151,10 +156,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckDatetime(aBuffer: PAnsiChar;
-                         aLen: Integer): Boolean;
+  function CheckInteger(aBuffer: PWideChar;
+                        aLen: Integer): Boolean;
   var
-    pc: PAnsiChar absolute aBuffer;
+    pc: PWideChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;
@@ -212,11 +217,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseDatetime(    aBuffer: PAnsiChar;
-                             aLen: Integer;
-                         var aValue: TDatetime): Boolean;
+  function ParseInt64(    aBuffer: PWideChar;
+                          aLen: Integer;
+                      var aValue: Int64): Boolean;
   var
-    pc: PAnsiChar absolute aBuffer;
+    pc: PWideChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;
@@ -311,6 +316,17 @@ implementation
   end;
 
 
+  { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
+  function ParseInteger(    aBuffer: PWideChar;
+                            aLen: Integer;
+                        var aValue: Integer): Boolean;
+  var
+    int: Int64;
+  begin
+    result := ParseInt64(aBuffer, aLen, int) and (int <= High(Integer));
+    if result then
+      aValue := int;
+  end;
 
 
 

@@ -1,5 +1,5 @@
 {
-  "id":"deltics.strings.parsers",
+  "id":"deltics.stringparsers",
   "version":"",
   "summary":"Utility classes for parsing values of different types from strings of all supported forms (Ansi, Wide, Unicode, and Utf8).",
   "tags":[
@@ -17,22 +17,22 @@
   ],
   "source":{
       "files":[
-        "src\\deltics.strings.parsers.inc",
-        "src\\Deltics.Strings.Parsers.pas",
-        "src\\Deltics.Strings.Parsers.Class_.pas",
-        "src\\Deltics.Strings.Parsers.Interfaces.pas",
-        "src\\Deltics.Strings.Parsers.Ansi.pas",
-        "src\\Deltics.Strings.Parsers.Ansi.AsBoolean.pas",
-        "src\\Deltics.Strings.Parsers.Ansi.AsCurrency.pas",
-        "src\\Deltics.Strings.Parsers.Ansi.AsDatetime.pas",
-        "src\\Deltics.Strings.Parsers.Ansi.AsInteger.pas",
-        "src\\Deltics.Strings.Parsers.Ansi.AsReal.pas",
-        "src\\Deltics.Strings.Parsers.Wide.pas",
-        "src\\Deltics.Strings.Parsers.Wide.AsBoolean.pas",
-        "src\\Deltics.Strings.Parsers.Wide.AsCurrency.pas",
-        "src\\Deltics.Strings.Parsers.Wide.AsDatetime.pas",
-        "src\\Deltics.Strings.Parsers.Wide.AsInteger.pas",
-        "src\\Deltics.Strings.Parsers.Wide.AsReal.pas"
+        "src\\deltics.stringparsers.inc",
+        "src\\Deltics.StringParsers.pas",
+        "src\\Deltics.StringParsers.Class_.pas",
+        "src\\Deltics.StringParsers.Interfaces.pas",
+        "src\\Deltics.StringParsers.Ansi.pas",
+        "src\\Deltics.StringParsers.Ansi.AsBoolean.pas",
+        "src\\Deltics.StringParsers.Ansi.AsCurrency.pas",
+        "src\\Deltics.StringParsers.Ansi.AsDatetime.pas",
+        "src\\Deltics.StringParsers.Ansi.AsInteger.pas",
+        "src\\Deltics.StringParsers.Ansi.AsReal.pas",
+        "src\\Deltics.StringParsers.Wide.pas",
+        "src\\Deltics.StringParsers.Wide.AsBoolean.pas",
+        "src\\Deltics.StringParsers.Wide.AsCurrency.pas",
+        "src\\Deltics.StringParsers.Wide.AsDatetime.pas",
+        "src\\Deltics.StringParsers.Wide.AsInteger.pas",
+        "src\\Deltics.StringParsers.Wide.AsReal.pas"
       ]
     }
 }

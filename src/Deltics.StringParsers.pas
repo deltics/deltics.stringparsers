@@ -1,15 +1,15 @@
 
-{$i deltics.strings.parsers.inc}
+{$i deltics.stringparsers.inc}
 
-  unit Deltics.Strings.Parsers;
+  unit Deltics.StringParsers;
 
 
 interface
 
   uses
     Deltics.StringTypes,
-    Deltics.Strings.Parsers.Interfaces,
-    Deltics.Strings.Parsers.Class_;
+    Deltics.StringParsers.Interfaces,
+    Deltics.StringParsers.Class_;
 
 
 

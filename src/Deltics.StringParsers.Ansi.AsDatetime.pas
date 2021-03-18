@@ -1,23 +1,23 @@
 
-{$i deltics.strings.parsers.inc}
+{$i deltics.stringparsers.inc}
 
 
-  unit Deltics.Strings.Parsers.Wide.AsDatetime;
+  unit Deltics.StringParsers.Ansi.AsDatetime;
 
 
 interface
 
-  function CheckDatetime(aBuffer: PWideChar; aLen: Integer): Boolean;
-  function ParseDatetime(aBuffer: PWideChar; aLen: Integer; var aValue: TDateTime): Boolean;
+  function CheckDatetime(aBuffer: PAnsiChar; aLen: Integer): Boolean;
+  function ParseDatetime(aBuffer: PAnsiChar; aLen: Integer; var aValue: TDateTime): Boolean;
 
 implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function Init(var aBuffer: PWideChar;
+  function Init(var aBuffer: PAnsiChar;
                 var aLen: Integer;
                 var aBase: Integer;
-                var aNeg: Boolean): Boolean;
+                var aNeg: Boolean): Boolean; 
   begin
     while (aLen > 0) and (aBuffer[0] = ' ') do
     begin
@@ -151,10 +151,10 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function CheckDatetime(aBuffer: PWideChar;
+  function CheckDatetime(aBuffer: PAnsiChar;
                          aLen: Integer): Boolean;
   var
-    pc: PWideChar absolute aBuffer;
+    pc: PAnsiChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;
@@ -212,11 +212,11 @@ implementation
 
 
   { - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - }
-  function ParseDatetime(    aBuffer: PWideChar;
+  function ParseDatetime(    aBuffer: PAnsiChar;
                              aLen: Integer;
                          var aValue: TDatetime): Boolean;
   var
-    pc: PWideChar absolute aBuffer;
+    pc: PAnsiChar absolute aBuffer;
     i: Integer;
     neg: Boolean;
     base: Integer;

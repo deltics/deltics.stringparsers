@@ -1,1 +1,1 @@
-# Deltics.Strings.Parsers
+# Deltics.StringParsers

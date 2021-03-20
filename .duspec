@@ -1,0 +1,38 @@
+{
+  "id":"deltics.stringparsers",
+  "version":"",
+  "summary":"Utility classes for parsing values of different types from strings of all supported forms (Ansi, Wide, Unicode, and Utf8).",
+  "tags":[
+    "deltics",
+    "strings",
+    "unicode"
+  ],
+  "copyright":"\u00a92019 Jolyon Direnko-Smith",
+  "language":"en",
+  "content":"source",
+  "dependencies":[
+    "deltics.inc:1.3.0",
+    "deltics.interfacedobjects:1.2.0",
+    "deltics.strings:2.0.0"
+  ],
+  "source":{
+      "files":[
+        "src\\deltics.stringparsers.inc",
+        "src\\Deltics.StringParsers.pas",
+        "src\\Deltics.StringParsers.Class_.pas",
+        "src\\Deltics.StringParsers.Interfaces.pas",
+        "src\\Deltics.StringParsers.Ansi.pas",
+        "src\\Deltics.StringParsers.Ansi.AsBoolean.pas",
+        "src\\Deltics.StringParsers.Ansi.AsCurrency.pas",
+        "src\\Deltics.StringParsers.Ansi.AsDatetime.pas",
+        "src\\Deltics.StringParsers.Ansi.AsInteger.pas",
+        "src\\Deltics.StringParsers.Ansi.AsReal.pas",
+        "src\\Deltics.StringParsers.Wide.pas",
+        "src\\Deltics.StringParsers.Wide.AsBoolean.pas",
+        "src\\Deltics.StringParsers.Wide.AsCurrency.pas",
+        "src\\Deltics.StringParsers.Wide.AsDatetime.pas",
+        "src\\Deltics.StringParsers.Wide.AsInteger.pas",
+        "src\\Deltics.StringParsers.Wide.AsReal.pas"
+      ]
+    }
+}
